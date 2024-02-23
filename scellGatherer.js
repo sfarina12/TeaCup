@@ -1,6 +1,7 @@
 var dnd_class = "wizard";
 var spell_types = []
 var spell_list = []
+var act_filter = "All";
 
 $(document).ready(function(){
   $.ajax({
@@ -23,15 +24,16 @@ $(document).ready(function(){
               icon = "https://www.dndbeyond.com/content/1-0-2639-0/skins/waterdeep/images/spell-schools/35/"+result.school.index+".png"
               spell_list.push(result)
 
-              $("#lista").append(
-                '<div class="l-elem">'+
-                    '<img width="48" height="48" style="border-radius: 50px;margin-right: 14px;" src="'+icon+'"/>'+
-                    '<div class="right">'+
-                        '<text style="vertical-align: top; font-weight: 700;">'+k.name+'</text>'+
-                        '<text style="width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">'+result.desc+'</text>'+
-                    '</div>'+
-                '</div>'
-              )
+              if(act_filter == type || act_filter == "All") {
+                $("#lista").append(
+                  '<div class="l-elem">'+
+                      '<img width="48" height="48" style="border-radius: 50px;margin-right: 14px;" src="'+icon+'"/>'+
+                      '<div class="right">'+
+                          '<text style="vertical-align: top; font-weight: 700;">'+k.name+'</text>'+
+                          '<text style="width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">'+result.desc+'</text>'+
+                      '</div>'+
+                  '</div>')
+              }
           }
         });
       })
@@ -45,6 +47,7 @@ $("body").on('click', '#expandFilter', function() {
 
 $("body").on('click', '#spell_types_list li', function() {
   filtered_type = $(this).html()
+  act_filter = filtered_type
   $("#lista").empty()
   $("#act_filter").html(filtered_type)
   openclose_filter();
@@ -87,10 +90,6 @@ $(document).on('touchmove',"#touchSupport",function(e){
 })
 
 $(document).on('touchstart',"#touchSupport",function(e){
-  height = window.innerHeight - e.touches[0].clientY - 40
-  pixels = height;
-  screenWidth = window.screen.width;
-  percentage = ( screenWidth - pixels ) / screenWidth ;
   height = window.innerHeight - e.touches[0].clientY - 40
   pixels = height;
   screenWidth = window.screen.width;
