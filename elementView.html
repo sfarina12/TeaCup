@@ -1,0 +1,298 @@
+<html>
+    <head>
+        <title> For The Dark Soul </title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="css/elementView.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    </head>
+    <body>
+        <a href="index.html"><div id="logo"> <img src="img/DarkMark.png"> </div> </a>
+
+        <h2>Categories</h2>
+        <div id="container_categories">
+            <div class="dummy_element_category"></div>
+        </div>
+
+        <h2 id="wpn">Weapons</h2>
+        <div id="categories_weapons">
+            <div class="dummy_element_weapon"></div>
+            <!--javascript will auto add here-->
+        </div>
+
+        <div class="element_weapon_modbile">
+            <div style="display: flex;">
+                <img js="img" class="image_weapon" src="" onerror="imageNotFound()">
+                <div class="mainStats">
+                    <div class="stat">attack type<div js="atk_type" style="float: right;">ciao</div></div>
+                    <div class="stat">requirements<div js="atk_req" style="float: right;">ciao</div></div>
+                    <div class="stat">scale<div js="atk_scl" style="float: right;">ciao</div></div>
+                    <div class="stat">weight<div js="atk_wgt" style="float: right;">ciao</div></div>
+                </div>
+            </div>
+
+            <table class="w_name"><tr><td js="name">moai</td></tr></table>
+            
+            <div class="expanded_modbile">
+                <div class="statContainer">damage
+                    <div class="statCategories">
+                        <div js="dgm_phy" style="background-color: #949494;">physic<br>58</div>
+                        <div js="dgm_mag" style="background-color: #955b9b;">magic<br>56</div>
+                        <div js="dgm_fir" style="background-color: #ee8229;">fire<br>56</div>
+                        <div js="dgm_lig" style="background-color: #d3c018;">lighting<br>56</div>
+                        <div js="dgm_bon" style="background-color: #3c3ed8;">bonus<br>56</div>
+                    </div>
+                </div>
+                <div class="statContainer">defence
+                    <div class="statCategories">
+                        <div js="def_phy" style="background-color: #949494;">physic<br>58</div>
+                        <div js="def_mag" style="background-color: #955b9b;">magic<br>56</div>
+                        <div js="def_fir" style="background-color: #ee8229;">fire<br>56</div>
+                        <div js="def_lig" style="background-color: #d3c018;">lighting<br>56</div>
+                        <div js="def_bon" style="background-color: #3c3ed8;">bonus<br>56</div>
+                    </div>
+                </div>
+                <div class="statContainer">effects
+                    <div class="statCategories">
+                        <div js="eff_poi" style="background-color: #811981;">poison<br>56</div>
+                        <div js="eff_ble" style="background-color: #a83131;">bleed<br>56</div>
+                        <div js="eff_div" style="background-color: #a7a7a7;">divine<br>56</div>
+                        <div js="eff_occ" style="background-color: #303030;">occult<br>56</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script src="DarkSoulsWeapons.js"></script>
+    <script>
+        isFirst=true;
+        var lastSelected;
+        var lastSelectedWeap;
+
+        function addCategoryUI(name)
+        {
+            $("#container_categories").append("<div class='element_category'><table class='c_name'><tr><td>"+name+"</td></tr></table></div>")
+
+            if(isFirst)
+            {
+                isFirst=false;
+                selectFirst()
+            }
+        }
+
+        function selectFirst()
+        {
+            $(".element_category").addClass("c_selected")
+
+            cat_name=$(".element_category").find("td").html()
+
+            $("#categories_weapons").empty()
+            $("#categories_weapons").append("<div class='dummy_element_weapon'></div>");
+
+            var n=0;
+
+            data.forEach(item => {
+                if(item.category==cat_name) { addWeaponUI(item,n); n++ }     
+            });
+
+            lastSelected=$(".element_category")
+            lastSelectedWeap=null
+        }
+
+        function setVariables(item)
+        {
+            $("[js='img']").attr("src",item.image)
+            $("[js='atk_type']").text(item.attackTypes)
+            $("[js='atk_req']").text(item.req)
+            $("[js='atk_scl']").text(item.scale)
+            $("[js='atk_wgt']").text(item.weight)
+            $("[js='name']").text(item.name)
+            $("[js='dgm_phy']").html("physic<br>"+(item.atk.physical===undefined?"-":item.atk.physical))
+            $("[js='dgm_mag']").html("magic<br>"+(item.atk.magic===undefined?"-":item.atk.magic))
+            $("[js='dgm_fir']").html("fire<br>"+(item.atk.fire===undefined?"-":item.atk.fire))
+            $("[js='dgm_lig']").html("lighting<br>"+(item.atk.lightning===undefined?"-":item.atk.lightning))
+            $("[js='dgm_bon']").html("bonus<br>"+(item.atk.bonus===undefined?"-":item.atk.bonus))
+            $("[js='def_phy']").html("physic<br>"+(item.def.physical===undefined?"-":item.def.physical))  
+            $("[js='def_mag']").html("magic<br>"+(item.def.magic===undefined?"-":item.def.magic))
+            $("[js='def_fir']").html("fire<br>"+(item.def.fire===undefined?"-":item.def.fire))
+            $("[js='def_lig']").html("lighting<br>"+(item.def.lightning===undefined?"-":item.def.lightning))
+            $("[js='def_bon']").html("bonus<br>"+(item.def.bonus===undefined?"-":item.def.bonus))
+            $("[js='eff_poi']").html("poison<br>"+(item.effects.poison===null?"-":item.effects.poison))
+            $("[js='eff_ble']").html("bleed<br>"+(item.effects.bleed===null?"-":item.effects.bleed))
+            $("[js='eff_div']").html("divine<br>"+(item.effects.divine===null?"-":item.effects.divine))
+            $("[js='eff_occ']").html("occult<br>"+(item.effects.occult===null?"-":item.effects.occult))
+        }
+
+        function imageNotFound() {
+            $("[js='img']").attr("src","img/ater.png")
+        }
+
+        function addWeaponUI(item,num)
+        {
+            //console.log(num);
+            $("#categories_weapons").append(
+                "<div class='element_weapon' num="+num+">"+
+                    "<div style='display: flex;'>"+
+                        "<img class='image_weapon' alt='the link is broken' onerror=this.src='img/ater.png' src="+item.image+">"+
+                        "<div class='mainStats'>"+
+                            "<div class='stat closed'>attack type<div style='float: right;'>"+item.attackTypes+"</div></div>"+
+                            "<div class='stat closed'>requirements<div style='float: right;'>"+item.req+"</div></div>"+
+                            "<div class='stat closed'>scale<div style='float: right;'>"+item.scale+"</div></div>"+
+                            "<div class='stat closed'>weight<div style='float: right;'>"+item.weight+"</div></div>"+
+                        "</div>"+
+                    "</div>"+
+                    "<table class='w_name'><tr><td>"+item.name+"</td></tr></table>"+
+                    "<div class='expanded closed'>"+
+                        "<div class='statContainer'>damage"+
+                            "<div class='statCategories'>"+
+                                "<div style='background-color: #949494;'>physic<br>"+(item.atk.physical===undefined?"-":item.atk.physical)+"</div>"+
+                                "<div style='background-color: #955b9b;'>magic<br>"+(item.atk.magic===undefined?"-":item.atk.magic)+"</div>"+
+                                "<div style='background-color: #ee8229;'>fire<br>"+(item.atk.fire===undefined?"-":item.atk.fire)+"</div>"+
+                                "<div style='background-color: #d3c018;'>lighting<br>"+(item.atk.lightning===undefined?"-":item.atk.lightning)+"</div>"+
+                                "<div style='background-color: #3c3ed8;'>bonus<br>"+(item.atk.bonus===undefined?"-":item.atk.bonus)+"</div>"+
+                            "</div>"+
+                        "</div>"+
+                        "<div class='statContainer'>defence"+
+                            "<div class='statCategories'>"+
+                                "<div style='background-color: #949494;'>physic<br>"+(item.def.physical===undefined?"-":item.def.physical)+"</div>"+
+                                "<div style='background-color: #955b9b;'>magic<br>" +(item.def.magic===undefined?"-":item.def.magic)+"</div>"+
+                                "<div style='background-color: #ee8229;'>fire<br>"+(item.def.fire===undefined?"-":item.def.fire)+"</div>"+
+                                "<div style='background-color: #d3c018;'>lighting<br>"+(item.def.lightning===undefined?"-":item.def.lightning)+"</div>"+
+                                "<div style='background-color: #3c3ed8;'>bonus<br>"+(item.def.bonus===undefined?"-":item.def.bonus)+"</div>"+
+                            "</div>"+
+                        "</div>"+
+                        "<div class='statContainer'>effects"+
+                            "<div class='statCategories'>"+
+                                "<div style='background-color: #811981;'>poison<br>"+(item.effects.poison===null?"-":item.effects.poison)+"</div>"+
+                                "<div style='background-color: #a83131;'>bleed<br>"+ (item.effects.bleed===null?"-":item.effects.bleed)  +"</div>"+
+                                "<div style='background-color: #a7a7a7;'>divine<br>"+(item.effects.divine===null?"-":item.effects.divine)+"</div>"+
+                                "<div style='background-color: #303030;'>occult<br>"+(item.effects.occult===null?"-":item.effects.occult)+"</div>"+
+                            "</div>"+
+                        "</div>"+
+                    "</div>"+
+                "</div>"
+            );
+        }
+
+        $("document").ready(function() {
+
+            categories=[
+                { "name":"Daggers", "start":0, "end":5},
+                { "name":"Straight Swords", "start":6, "end":18},
+                { "name":"Greatswords", "start":19, "end":31},
+                { "name":"Ultra Greatswords", "start":32, "end":36},
+                { "name":"Curved Swords", "start":37, "end":43},
+                { "name":"Katanas", "start":44, "end":47},
+                { "name":"Curved Greatswords", "start":48, "end":50},
+                { "name":"Piercing Swords", "start":51, "end":55},
+                { "name":"Axes", "start":56, "end":61},
+                { "name":"Great Axes", "start":62, "end":66},
+                { "name":"Hammers", "start":67, "end":75},
+                { "name":"Great Hammers", "start":76, "end":80},
+                { "name":"Fist & Claws", "start":81, "end":85},
+                { "name":"Spears", "start":86, "end":95},
+                { "name":"Halberds", "start":96, "end":104},
+                { "name":"Whips", "start":105, "end":107},
+                { "name":"Bows", "start":108, "end":112},
+                { "name":"Greatbows", "start":113, "end":114},
+                { "name":"Crossbows", "start":115, "end":118},
+                { "name":"Flames", "start":119, "end":120},
+                { "name":"Catalysts", "start":121, "end":131},
+                { "name":"Talismans", "start":132, "end":140}
+            ]
+
+            var weap_Cont=0;
+            var act_caty=0;
+            data.forEach(dataItem=>{
+                urlImage="https://darksouls.wiki.fextralife.com/file/Dark-Souls/"
+                weapName=dataItem.name.replace(/ /g,"_").toLowerCase();    
+                urlImage+=weapName+".png"
+
+                dataItem.image=urlImage;
+
+                start=categories[act_caty].start
+                end=categories[act_caty].end
+                
+                if(weap_Cont < start || weap_Cont > end) { act_caty++ }    
+                
+                dataItem.category=categories[act_caty].name
+            
+                weap_Cont++    
+            });
+  
+
+            categories.forEach(item=>{
+                addCategoryUI(item.name)
+            });
+
+            $(".element_category").click(function(){
+                $(lastSelected).removeClass("c_selected")
+                $(this).addClass("c_selected")
+
+                cat_name=$(this).find("td").html()
+                
+                $("#categories_weapons").empty()
+                $("#categories_weapons").append("<div class='dummy_element_weapon'></div>");
+
+                var n=0;
+
+                data.forEach(item => {
+                    
+                    if(item.category==cat_name)
+                    {
+                        addWeaponUI(item,n)
+                        n++;
+                    }
+                });
+
+                lastSelected=this
+            });  
+            
+            $("body").on("click",".element_weapon_modbile",function(){
+                $(".element_weapon_modbile").removeClass("c_selected_w")
+            });
+
+            $("body").on("click",".element_weapon",function(){
+                if((this!=lastSelectedWeap && lastSelectedWeap!=null))
+                {
+                    if(window.innerWidth>428)
+                    {
+                        $(lastSelectedWeap).removeClass("c_selected_w")
+                        $(lastSelectedWeap).find(".expanded").addClass("closed")
+                        $(lastSelectedWeap).find(".mainStats .stat").addClass("closed")
+                    }   
+                }
+
+                if(this==lastSelectedWeap)
+                {    
+                    if(window.innerWidth>428)
+                    {
+                        $(lastSelectedWeap).removeClass("c_selected_w")
+                        $(lastSelectedWeap).find(".expanded").addClass("closed")
+                        $(lastSelectedWeap).find(".mainStats .stat").addClass("closed")
+                    }
+                }else
+                {   
+                    if(window.innerWidth<=428)
+                    {
+                        $(".element_weapon_modbile").addClass("c_selected_w")
+                        var name=$(this).find("td").html()
+                        
+                        data.forEach(item => {
+                            if(item.name==name)
+                                {setVariables(item)}
+                        });
+                    }
+                    else
+                    {
+                        $(this).addClass("c_selected_w")
+                        $(this).find("div").removeClass("closed")
+                        lastSelectedWeap=this;        
+                    }
+                }
+                        
+            });
+        });
+    </script>
+</html>
