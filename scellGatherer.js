@@ -78,7 +78,7 @@ function openclose_filter() {
   open_bottom = !open_bottom;
 }
 
-$(document).on('touchmove',"close-notch",function(e){
+$(document).on('touchmove',"#touchSupport",function(e){
   height = window.innerHeight - e.touches[0].clientY - 40
   pixels = height;
   screenWidth = window.screen.width;
@@ -86,23 +86,27 @@ $(document).on('touchmove',"close-notch",function(e){
   $("#content_brawser").attr("style","height:"+height+"px");
 })
 
-$(document).on('touchstart',"close-notch",function(e){
+$(document).on('touchstart',"#touchSupport",function(e){
   height = window.innerHeight - e.touches[0].clientY - 40
   pixels = height;
   screenWidth = window.screen.width;
   percentage = ( screenWidth - pixels ) / screenWidth ;
-  $("#content_brawser").attr("style","")
+  height = window.innerHeight - e.touches[0].clientY - 40
+  pixels = height;
+  screenWidth = window.screen.width;
+  percentage = ( screenWidth - pixels ) / screenWidth ;
+  $("#content_brawser").attr("style","height:"+height+"px");
 })
 
-$(document).on('touchend',"close-notch",function(e){
+$(document).on('touchend',"#touchSupport",function(e){
   height = $("#content_brawser").height()
   pixels = height;
   screenWidth = window.screen.width;
   percentage = ( screenWidth - pixels ) / screenWidth ;
-  
+  console.log(percentage > 0.15)
   if(percentage > 0.15) {
-    $("#content_brawser").attr("style","height:6%,transition: height cubic-bezier(0, 0, 0, 0.99) 0.3s");
+    $("#content_brawser").attr("style","height:6%;background:white; transition: height cubic-bezier(0, 0, 0, 0.99) 0.3s,background cubic-bezier(0, 0, 0, 0.99) 0.3s;");
   } else {
-    $("#content_brawser").attr("style","transition: height cubic-bezier(0, 0, 0, 0.99) 0.3s");
+    $("#content_brawser").attr("style","transition: height cubic-bezier(0, 0, 0, 0.99) 0.3s,background cubic-bezier(0, 0, 0, 0.99) 0.3s;");
   }
 })
