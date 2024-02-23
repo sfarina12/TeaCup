@@ -26,19 +26,24 @@ body {
     align-self: end;
     border-radius: 20px;
     backdrop-filter: blur(16px);
+    position: absolute;
+    bottom: 2%;
+    left: 3%;
+    right: 3%;
+    transition: height cubic-bezier(0, 0, 0, 0.99) 0.3s;
+    display: block;
+    overflow: hidden;
+}
+
+#selected_filter {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-direction: row;
     gap: 14px;
     flex-wrap: nowrap;
-    position: absolute;
-    bottom: 2%;
-    left: 3%;
-    right: 3%;
-    transition: height cubic-bezier(0, 0, 0, 0.99) 0.3s;
+    height:100%;
 }
-
 .expanded_bottom_content {
     margin-top:3%;
 }
@@ -120,3 +125,17 @@ close-notch {
     justify-content: flex-start;
     align-items: flex-start;
 }
+
+#spell_types_list {
+    list-style: none;
+    margin-top: 0px;
+    padding-left: 5%;
+}
+
+#spell_types_list li {
+    font-size: 22px;
+}
+
+#spell_types_list li:not(:last-child) { 
+    margin-bottom: 15px;  
+ }
