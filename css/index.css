@@ -152,6 +152,7 @@ close-notch {
     scroll-snap-align: center;
     color:#a1a1a1;
     display:flex;
+    scrollbar-width: none;
 }
 
  #levelFilter {
