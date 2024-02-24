@@ -10,9 +10,9 @@ body {
 }
 
 #main_container {
-    background-image: url(../img/bg.jpg);
+    background-image: url(../img/bg2.jpg);
     background-repeat: no-repeat;
-    background-position: top;
+    background-position: center;
     width: 100%;
     height: 100%;
     max-width: 1424px;
@@ -44,6 +44,8 @@ body {
     gap: 14px;
     flex-wrap: nowrap;
     height:100%;
+    position: relative;
+    z-index: 99;
 }
 .expanded_bottom_content {
     margin-top:3%;
@@ -138,15 +140,19 @@ close-notch {
     list-style: none;
     margin-top: 0px;
     padding-left: 5%;
+    height: 64%;
+    overflow: scroll;
+    scrollbar-width: none;
+    scroll-snap-type: y mandatory;
 }
 
-#spell_types_list li {
+#spell_types_list > section {
     font-size: 22px;
-}
-
-#spell_types_list li:not(:last-child) { 
     margin-bottom: 15px;  
- }
+    scroll-snap-align: center;
+    color:#a1a1a1;
+    display:flex;
+}
 
  #levelFilter {
     color: black;
@@ -163,30 +169,31 @@ close-notch {
     font-size: 25px;
  }
 
-#levelFilter:after {
-    content: "";
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 50%;
-    pointer-events: none;
-    background-image: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255, 1) 44%);
-    width: 22%;
-    height: 4em;
-  }
-
-  #levelFilter:before {
-    content: "";
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 22%;
-    pointer-events: none;
-    background-image: linear-gradient(270deg, rgba(255,255,255,0), rgba(255,255,255, 1) 44%);
-    width: 22%;
-    height: 4em;
-  }
-
- #levelFilter section {scroll-snap-align: center;}
+#levelFilter section {scroll-snap-align: center;}
 
 #selectedLevel{font-size: 32px;}
+
+.active,.active_ {
+    /*font-weight: 640;*/
+    color:black !important
+}
+
+.visible {color:#a1a1a1 !important}
+
+.spell_types_level {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-left: 29px;
+    gap: 29px;
+    overflow-x: scroll;
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+    color: white
+}
+
+.spell_types_level section {
+    scroll-snap-align: start;
+    margin-bottom: 0px !important;
+}
