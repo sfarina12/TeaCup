@@ -202,6 +202,7 @@ function fill_info(spell) {
   $("#range").html(spell.range/3.28084)
 
   var is_material = false;
+  $("#components").empty()
   spell.components.forEach(function(k,v) {
     va = k
     if(k == "V") va = "View"
