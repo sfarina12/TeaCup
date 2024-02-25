@@ -218,16 +218,30 @@ function fill_info(spell) {
   $("#ritual").html(spell.ritual)
   
   $("#duration").html('<img width="28" height="28" src="https://img.icons8.com/windows/32/clock--v1.png"/>'+(spell.duration == null ? "-" : spell.duration))
+  if(spell.concentration)
   $("#concentration").html('<img width="28" height="28" src="https://img.icons8.com/windows/32/aperture.png"/>'+(spell.concentration == null ? "-" : spell.concentration))
   $("#casting_time").html('<img width="28" height="28" src="https://img.icons8.com/windows/32/fantasy.png"/>'+(spell.casting_time == null ? "-" : spell.casting_time))
   
-  $("#attack_type").html(spell.attack_type)
+  if(spell.attack_type == null && spell.damage == null && spell.dc.dc_type == null) $("#attack_type").addClass("hidden")
+  else $("#attack_type").removeClass("hidden")
+
+  $("#attack_type").html('<img width="28" height="28" src="https://img.icons8.com/windows/32/sword.png"/>' + (spell.attack_type == null ? "" : spell.attack_type))
   if(spell.damage != null) {
-    $("#damage_type").html(spell.damage.damage_type)
-    $("#damage_at_slot_level").html(spell.damage.damage_at_slot_level)
+    damage = ""
+    if(spell.damage.damage_at_slot_level != null) {
+      damage = "("
+      spell.damage.damage_at_slot_level.forEach(function(k,v) {
+        damage += k+":"+v+";"
+      })
+      damage = ")"
+    }
+    comma = spell.attack_type == null ? "" : ", "
+    $("#attack_type").append(comma+spell.damage.damage_type.name+damage)
   } else {
-    $("#damage_type").html(spell.dc.dc_type)
-    $("#damage_at_slot_level").html(spell.dc.dc_success)
+    damage = ""
+    if(spell.damage.damage_at_slot_level != null) damage = "("+spell.dc.dc_success+")"
+    comma = spell.attack_type == null ? "" : ", "
+    $("#attack_type").append(comma+spell.dc.dc_type.name+damage)
   }
   
 }
