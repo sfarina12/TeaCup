@@ -2,6 +2,7 @@ var dnd_class = "wizard";
 var spell_types = []
 var spell_list = []
 var act_filter = "All";
+var act_level_filter = "-"
 var is_scrolling = false;
 
 $(document).ready(function(){
@@ -41,7 +42,7 @@ $(document).ready(function(){
               icon = "https://www.dndbeyond.com/content/1-0-2639-0/skins/waterdeep/images/spell-schools/35/"+result.school.index+".png"
               spell_list.push(result)
 
-              if(act_filter == type || act_filter == "All") {
+              if((act_filter == type || act_filter == "All") && (act_level_filter == result.level || act_level_filter == "-")) {
                 $("#lista").append(
                   '<div class="l-elem" index="'+result.index+'">'+
                       '<img width="48" height="48" style="border-radius: 50px;margin-right: 14px;" src="'+icon+'"/>'+
@@ -69,12 +70,13 @@ $("body").on('click', '#expandFilter', function() {
 
 $("body").on('click', '#spell_types_list section', function() {
   filtered_type = $(this).attr("tipo")
+  act_level_filter = $(".active_").html()
   act_filter = filtered_type
   $("#lista").empty()
   $("#act_filter").html(filtered_type)
   openclose_filter();
   spell_list.forEach(function(k,v) {
-    if((k.school.name == filtered_type) || (filtered_type == "All")) {
+    if(((k.school.name == filtered_type) || (filtered_type == "All")) && (k.level == act_level_filter || act_level_filter == "-")) {
       icon = "https://www.dndbeyond.com/content/1-0-2639-0/skins/waterdeep/images/spell-schools/35/"+k.school.index+".png"
       $("#lista").append(
         '<div class="l-elem" index="'+k.index+'">'+
@@ -230,7 +232,7 @@ function fill_info(spell) {
     damage = ""
     if(spell.damage.damage_at_slot_level != null) {
       damage = "("
-      spell.damage.damage_at_slot_level.forEach(function(k,v) {
+      spell.damage.damage_at_slot_level.each(function(k,v) {
         damage += k+":"+v+";"
       })
       damage = ")"
@@ -239,7 +241,7 @@ function fill_info(spell) {
     $("#attack_type").append(comma+spell.damage.damage_type.name+damage)
   } else {
     damage = ""
-    if(spell.damage.damage_at_slot_level != null) damage = "("+spell.dc.dc_success+")"
+    if(spell.dc.dc_success != null) damage = "("+spell.dc.dc_success+")"
     comma = spell.attack_type == null ? "" : ", "
     $("#attack_type").append(comma+spell.dc.dc_type.name+damage)
   }
