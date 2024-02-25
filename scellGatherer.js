@@ -2,6 +2,7 @@ var dnd_class = "wizard";
 var spell_types = []
 var spell_list = []
 var act_filter = "All";
+var is_scrolling = false;
 
 $(document).ready(function(){
   $.ajax({
@@ -42,7 +43,7 @@ $(document).ready(function(){
 
               if(act_filter == type || act_filter == "All") {
                 $("#lista").append(
-                  '<div class="l-elem">'+
+                  '<div class="l-elem" index="'+result.index+'">'+
                       '<img width="48" height="48" style="border-radius: 50px;margin-right: 14px;" src="'+icon+'"/>'+
                       '<div class="right">'+
                           '<text style="vertical-align: top; font-weight: 700;">'+k.name+'</text>'+
@@ -76,7 +77,7 @@ $("body").on('click', '#spell_types_list section', function() {
     if((k.school.name == filtered_type) || (filtered_type == "All")) {
       icon = "https://www.dndbeyond.com/content/1-0-2639-0/skins/waterdeep/images/spell-schools/35/"+k.school.index+".png"
       $("#lista").append(
-        '<div class="l-elem">'+
+        '<div class="l-elem" index="'+k.index+'">'+
             '<img width="48" height="48" style="border-radius: 50px;margin-right: 14px;" src="'+icon+'"/>'+
             '<div class="right">'+
                 '<text style="vertical-align: top; font-weight: 700;">'+k.name+'</text>'+
@@ -89,6 +90,7 @@ $("body").on('click', '#spell_types_list section', function() {
 })
 
 function openclose_filter() {
+  $("#spell_types_list").removeClass("hidden")
   if(!open_bottom) {
     $("#bottom_navigator").attr("style","height: 30%;")
     $("#selected_filter").attr("style","height: 36%;")
@@ -98,6 +100,7 @@ function openclose_filter() {
     $("#bottom_navigator").attr("style","");
     $("#selected_filter").attr("style","")
     $("#expandFilter img").attr("src","https://img.icons8.com/fluency-systems-filled/48/ff7300/collapse-arrow--v2.png")
+    $("#act_filter").html(act_filter)
   }
   open_bottom = !open_bottom;
 }
@@ -156,3 +159,60 @@ $("body").on("custom-scroll",function(){
     }
   });
 })
+
+$("#lista").on("scroll",function(){ is_scrolling = true; }) 
+$(document).on("touchstart","#content_brawser",function(){ is_scrolling = false; }) 
+
+$(document).on('touchend',".l-elem",function(e){
+  if(!is_scrolling) {
+    var spell_id = $(this).attr("index")
+    
+    if(openclose_info()) {
+      $.ajax({
+        url: "https://www.dnd5eapi.co/api/spells/"+spell_id, 
+        success: function(result){
+          fill_info(result)
+        }
+      });
+    }
+  }
+})
+
+function openclose_info() {
+  $("#spell_types_list").addClass("hidden")
+  if(!open_bottom) {
+    $("#bottom_navigator").attr("style","height: 75%;")
+    $("#selected_filter").attr("style","height: 14%;")
+    $("#expandFilter img").attr("src","https://img.icons8.com/fluency-systems-filled/48/ff7300/collapse-arrow.png")
+  }
+  if(open_bottom) {
+    $("#bottom_navigator").attr("style","");
+    $("#selected_filter").attr("style","")
+    $("#expandFilter img").attr("src","https://img.icons8.com/fluency-systems-filled/48/ff7300/collapse-arrow--v2.png") 
+  }
+  open_bottom = !open_bottom;
+  return open_bottom
+}
+
+function fill_info(spell) {
+  $("#level").html(spell.level)
+  $("#act_filter").html(spell.name)
+  $("#desc").html(spell.desc)
+  $("#higher_level").html(spell.higher_level)
+  $("#range").html(spell.range/3.28084)
+  $("#components").html(spell.components)
+  $("#material").html(spell.material)
+  $("#ritual").html(spell.ritual)
+  $("#duration").html(spell.duration)
+  $("#concentration").html(spell.concentration)
+  $("#casting_time").html(spell.casting_time)
+  $("#attack_type").html(spell.attack_type)
+  if(spell.damage != null) {
+    $("#damage_type").html(spell.damage.damage_type)
+    $("#damage_at_slot_level").html(spell.damage.damage_at_slot_level)
+  } else {
+    $("#damage_type").html(spell.dc.dc_type)
+    $("#damage_at_slot_level").html(spell.dc.dc_success)
+  }
+  
+}

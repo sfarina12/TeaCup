@@ -143,6 +143,7 @@ close-notch {
     height: 64%;
     overflow: scroll;
     scrollbar-width: none;
+    scrollbar-color: white;
     scroll-snap-type: y mandatory;
 }
 
@@ -197,4 +198,14 @@ close-notch {
 .spell_types_level section {
     scroll-snap-align: start;
     margin-bottom: 0px !important;
+}
+
+#spell_container {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.hidden {
+    display: none;
 }
