@@ -5,8 +5,6 @@ var act_filter = "All";
 var act_level_filter = "-"
 var is_scrolling = false;
 
-//insert loading bars
-
 $(document).ready(function(){
   $.ajax({
     url: "https://www.dnd5eapi.co/api/classes/"+dnd_class+"/spells", 
