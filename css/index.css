@@ -150,7 +150,7 @@ close-notch {
 #spell_types_list > section {
     font-size: 22px;
     margin-bottom: 15px;  
-    scroll-snap-align: center;
+    scroll-snap-align: start;
     color:#a1a1a1;
     display:flex;
     scrollbar-width: none;
