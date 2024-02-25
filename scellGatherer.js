@@ -5,6 +5,8 @@ var act_filter = "All";
 var act_level_filter = "-"
 var is_scrolling = false;
 
+//insert loading bars
+
 $(document).ready(function(){
   $.ajax({
     url: "https://www.dnd5eapi.co/api/classes/"+dnd_class+"/spells", 
@@ -23,10 +25,14 @@ $(document).ready(function(){
       $("#spell_types_list").append("<section style='color:white'>1</section>")
       $("#spell_types_list").append("<section style='color:white'>1</section>")
 
+      var total_request = 0;
+      var count_request = 0;
       result.results.forEach(function(k,v) {
+        total_request++;
         $.ajax({
           url: "https://www.dnd5eapi.co/api/spells/"+k.index, 
           success: function(result){
+              count_request++;
               type = result.school.name
               if(!spell_types.includes(type)) {
                 spell_types.push(type)
@@ -52,15 +58,17 @@ $(document).ready(function(){
                       '</div>'+
                   '</div>')
               }
+
+              if(total_request == count_request)
+                $("#loading_list").addClass("hidden")
             }
         });
       })
-      
     }});
 });
 
 function htmllevel() {
-  return '<div class="spell_types_level"><section>-</section><section>1</section><section>2</section><section>3</section><section>4</section><section>5</section><section>6</section><section>7</section><section>8</section><section>9</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section></div>';
+  return '<div class="spell_types_level"><section>-</section><section>T</section><section>1</section><section>2</section><section>3</section><section>4</section><section>5</section><section>6</section><section>7</section><section>8</section><section>9</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section></div>';
 }
 
 var open_bottom = false;
@@ -70,10 +78,15 @@ $("body").on('click', '#expandFilter', function() {
 
 $("body").on('click', '#spell_types_list section', function() {
   filtered_type = $(this).attr("tipo")
+  
   act_level_filter = $(".active_").html() == null ? "-" : $(".active_").html()
-  act_filter = filtered_type
+  
   $("#lista").empty()
-  $("#act_filter").html(filtered_type)
+  $("#act_filter").html(filtered_type+" "+act_level_filter)
+
+  act_filter = filtered_type
+  act_level_filter = act_level_filter == "T" ? "0" : act_level_filter
+
   openclose_filter();
   spell_list.forEach(function(k,v) {
     if(((k.school.name == filtered_type) || (filtered_type == "All")) && (k.level == act_level_filter || act_level_filter == "-")) {
@@ -171,10 +184,14 @@ $(document).on('touchend',".l-elem",function(e){
     var spell_id = $(this).attr("index")
     
     if(openclose_info()) {
+      $("#loading_spell").removeClass("hidden")
       $.ajax({
         url: "https://www.dnd5eapi.co/api/spells/"+spell_id, 
         success: function(result){
           fill_info(result)
+        },
+        complete: function() {
+          $("#loading_spell").addClass("hidden")
         }
       });
     }
@@ -198,7 +215,7 @@ function openclose_info() {
 }
 
 function fill_info(spell) {
-  $("#level").html(spell.level)
+  $("#level").html(spell.level == "0" ? "T" : spell.level)
   $("#act_filter").html(spell.name)
   $("#desc").html(spell.desc)
   $("#higher_level").html(spell.higher_level)
