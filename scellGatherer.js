@@ -151,6 +151,7 @@ $("#spell_types_list").on("scroll",function(){
 })
 
 $("body").on("custom-scroll",function(){
+  $(".active_").removeClass("active_")
   ll = $(".spell_types_level").children()
   ll.each(function (index, ele) {
     if (Math.abs(ele.getBoundingClientRect().left - $(ele).parent()[0].getBoundingClientRect().left) < 10) {
