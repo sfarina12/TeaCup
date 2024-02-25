@@ -128,7 +128,6 @@ $(document).on('touchend',"#touchSupport",function(e){
   pixels = height;
   screenWidth = window.screen.width;
   percentage = ( screenWidth - pixels ) / screenWidth ;
-  console.log(percentage > 0.15)
   if(percentage > 0.15) {
     $("#content_brawser").attr("style","height:6%;background:white; transition: height cubic-bezier(0, 0, 0, 0.99) 0.3s,background cubic-bezier(0, 0, 0, 0.99) 0.3s;");
   } else {
@@ -203,9 +202,13 @@ function fill_info(spell) {
   $("#act_filter").html(spell.name)
   $("#desc").html(spell.desc)
   $("#higher_level").html(spell.higher_level)
-  var calc = spell.range.substring(0,spell.range.indexOf(" feet"))
-  calc = Math.floor(calc / 3.28084)
-  if(calc != 0) $("#range").html(calc+" meters")
+  if(spell.range != 'Self') {
+    var calc = spell.range.substring(0,spell.range.indexOf(" feet"))
+    calc = Math.floor(calc / 3.28084)
+    if(calc != 0) $("#range").html(calc+" meters")
+  } else {
+    $("#range").html("Self")
+  }
 
   var is_material = false;
   $("#components").empty()
@@ -247,9 +250,12 @@ function fill_info(spell) {
     $("#attack_type").append(comma+nameDmg+damage)
   } else {
     damage = ""
-    if(spell.dc.desc != null) damage = "("+spell.dc.desc+")"
-    comma = spell.attack_type == null ? "" : ", "
-    $("#attack_type").append(comma+"DC "+spell.dc.dc_type.name+damage)
+    if(spell.dc != null) {
+      damage = "("+spell.dc.desc+")"
+      comma = spell.attack_type == null ? "" : ", "
+      nameDmg = spell.dc.dc_type == null ? "" : spell.dc.dc_type.name
+      $("#attack_type").append(comma+"DC "+nameDmg+damage)
+    }
   }
   
 }
