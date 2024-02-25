@@ -80,7 +80,8 @@ $("body").on('click', '#spell_types_list section', function() {
   act_level_filter = $(".active_").html() == null ? "-" : $(".active_").html()
   
   $("#lista").empty()
-  $("#act_filter").html(filtered_type+" "+act_level_filter)
+  var tmp = act_level_filter == "-"?"":act_level_filter
+  $("#act_filter").html(filtered_type+" "+tmp)
 
   act_filter = filtered_type
   act_level_filter = act_level_filter == "T" ? "0" : act_level_filter
@@ -113,7 +114,9 @@ function openclose_filter() {
     $("#bottom_navigator").attr("style","");
     $("#selected_filter").attr("style","")
     $("#expandFilter img").attr("src","https://img.icons8.com/fluency-systems-filled/48/ff7300/collapse-arrow--v2.png")
-    $("#act_filter").html(act_filter)
+    var tmp = act_level_filter == "0" ? "T" : act_level_filter
+    tmp = act_level_filter == "-" ? "" : act_level_filter
+    $("#act_filter").html(act_filter+" "+tmp)
   }
   open_bottom = !open_bottom;
 }
