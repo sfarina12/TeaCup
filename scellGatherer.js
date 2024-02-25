@@ -200,12 +200,26 @@ function fill_info(spell) {
   $("#desc").html(spell.desc)
   $("#higher_level").html(spell.higher_level)
   $("#range").html(spell.range/3.28084)
-  $("#components").html(spell.components)
+
+  var is_material = false;
+  spell.components.forEach(function(k,v) {
+    va = k
+    if(k == "V") va = "View"
+    if(k == "S") va = "Speech"
+    if(k == "M") {va = "Materials"; is_material = true;}
+    $("#components").append("<div>"+va+"</div>")
+  })
+
+  if(!is_material) $("#material").addClass("hidden")
+  else $("#material").removeClass("hidden")
   $("#material").html(spell.material)
+
   $("#ritual").html(spell.ritual)
-  $("#duration").html(spell.duration)
-  $("#concentration").html(spell.concentration)
-  $("#casting_time").html(spell.casting_time)
+  
+  $("#duration").html('<img width="28" height="28" src="https://img.icons8.com/windows/32/clock--v1.png"/>'+(spell.duration == null ? "-" : spell.duration))
+  $("#concentration").html('<img width="28" height="28" src="https://img.icons8.com/windows/32/aperture.png"/>'+(spell.concentration == null ? "-" : spell.concentration))
+  $("#casting_time").html('<img width="28" height="28" src="https://img.icons8.com/windows/32/fantasy.png"/>'+(spell.casting_time == null ? "-" : spell.casting_time))
+  
   $("#attack_type").html(spell.attack_type)
   if(spell.damage != null) {
     $("#damage_type").html(spell.damage.damage_type)

@@ -202,8 +202,44 @@ close-notch {
 
 #spell_container {
     width: 100%;
-    height: 100%;
+    height: calc(90% - 20px);
     overflow-y: scroll;
+}
+
+#level {
+    float: right;
+    font-size: 32px;
+    margin-top: 1%;
+    margin-right: 8%;
+    width: 44px;
+    text-align: center;
+    background: #ff7300;
+    border-radius: 12px;
+    color: white;
+    margin-left: 10px;
+}
+
+#components {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-left: 5%;
+    gap:5px;
+}
+
+#components div {
+    background: #ff7300;
+    padding: 2px 6px;
+    border-radius: 8px;
+    color: white;
+}
+
+#material {
+    padding: 3px 10px;
+    background: #ff7300;
+    margin: 6px 5%;
+    border-radius: 8px;
+    color: white;
 }
 
 .hidden {
