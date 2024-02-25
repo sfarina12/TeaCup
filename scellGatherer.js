@@ -201,7 +201,8 @@ function fill_info(spell) {
   $("#act_filter").html(spell.name)
   $("#desc").html(spell.desc)
   $("#higher_level").html(spell.higher_level)
-  $("#range").html(spell.range/3.28084)
+  var calc = spell.range.substring(0,spell.range.indexOf(" feet"))
+  $("#range").html(Math.floor(calc / 3.28084)+" meters")
 
   var is_material = false;
   $("#components").empty()
@@ -241,9 +242,9 @@ function fill_info(spell) {
     $("#attack_type").append(comma+spell.damage.damage_type.name+damage)
   } else {
     damage = ""
-    if(spell.dc.dc_success != null) damage = "("+spell.dc.dc_success+")"
+    if(spell.dc.desc != null) damage = "("+spell.dc.desc+")"
     comma = spell.attack_type == null ? "" : ", "
-    $("#attack_type").append(comma+spell.dc.dc_type.name+damage)
+    $("#attack_type").append(comma+"DC "+spell.dc.dc_type.name+damage)
   }
   
 }
