@@ -70,7 +70,7 @@ $("body").on('click', '#expandFilter', function() {
 
 $("body").on('click', '#spell_types_list section', function() {
   filtered_type = $(this).attr("tipo")
-  act_level_filter = $(".active_").html()
+  act_level_filter = $(".active_").html() == null ? "-" : $(".active_").html()
   act_filter = filtered_type
   $("#lista").empty()
   $("#act_filter").html(filtered_type)
@@ -138,6 +138,7 @@ $(document).on('touchend',"#touchSupport",function(e){
 
 $("#spell_types_list").on("scroll",function(){
   ll = $("#spell_types_list").children()
+  $(".active_").removeClass("active_")
   ll.each(function (index, ele) {
     if (Math.abs(ele.getBoundingClientRect().top - $("#spell_types_list")[0].getBoundingClientRect().top) < 15) {
       $(ele).addClass("active")
@@ -203,7 +204,8 @@ function fill_info(spell) {
   $("#desc").html(spell.desc)
   $("#higher_level").html(spell.higher_level)
   var calc = spell.range.substring(0,spell.range.indexOf(" feet"))
-  $("#range").html(Math.floor(calc / 3.28084)+" meters")
+  calc = Math.floor(calc / 3.28084)
+  if(calc != 0) $("#range").html(calc+" meters")
 
   var is_material = false;
   $("#components").empty()
@@ -226,21 +228,23 @@ function fill_info(spell) {
   $("#concentration").html('<img width="28" height="28" src="https://img.icons8.com/windows/32/aperture.png"/>'+(spell.concentration == null ? "-" : spell.concentration))
   $("#casting_time").html('<img width="28" height="28" src="https://img.icons8.com/windows/32/fantasy.png"/>'+(spell.casting_time == null ? "-" : spell.casting_time))
   
-  if(spell.attack_type == null && spell.damage == null && spell.dc.dc_type == null) $("#attack_type").addClass("hidden")
+  if(spell.attack_type == null && spell.damage == null && spell.dc == null) $("#attack_type").addClass("hidden")
   else $("#attack_type").removeClass("hidden")
 
   $("#attack_type").html('<img width="28" height="28" src="https://img.icons8.com/windows/32/sword.png"/>' + (spell.attack_type == null ? "" : spell.attack_type))
   if(spell.damage != null) {
     damage = ""
     if(spell.damage.damage_at_slot_level != null) {
-      damage = "("
-      spell.damage.damage_at_slot_level.each(function(k,v) {
-        damage += k+":"+v+";"
+      damage = "(";
+      Object.entries(spell.damage.damage_at_slot_level).forEach(function(k,v) {
+        damage += "level "+k[0]+": "+k[1]+";"
       })
-      damage = ")"
+      damage = damage.substring(0,damage.lastIndexOf(";")-1)
+      damage += ")"
     }
     comma = spell.attack_type == null ? "" : ", "
-    $("#attack_type").append(comma+spell.damage.damage_type.name+damage)
+    nameDmg = spell.damage.damage_type == null ? "" : spell.damage.damage_type.name
+    $("#attack_type").append(comma+nameDmg+damage)
   } else {
     damage = ""
     if(spell.dc.desc != null) damage = "("+spell.dc.desc+")"
