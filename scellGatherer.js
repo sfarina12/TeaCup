@@ -4,65 +4,13 @@ var spell_list = []
 var act_filter = "All";
 var act_level_filter = "-"
 var is_scrolling = false;
+var act_class = "wizard"
+
+//add smar DICE bolder
+
 
 $(document).ready(function(){
-  $.ajax({
-    url: "https://www.dnd5eapi.co/api/classes/"+dnd_class+"/spells", 
-    success: function(result){
-      
-      spell_types.push("All")
-
-      thisll1 = $("<section class='active' tipo='All'>All"+htmllevel()+"</section>")
-      $("#spell_types_list").prepend(thisll1)
-
-      $($(thisll1).children()[0]).on("scroll", function(){
-        thisll1.trigger("custom-scroll");
-      })
-
-      $("#spell_types_list").append(thisll1)
-      $("#spell_types_list").append("<section style='color:white'>1</section>")
-      $("#spell_types_list").append("<section style='color:white'>1</section>")
-
-      var total_request = 0;
-      var count_request = 0;
-      result.results.forEach(function(k,v) {
-        total_request++;
-        $.ajax({
-          url: "https://www.dnd5eapi.co/api/spells/"+k.index, 
-          success: function(result){
-              count_request++;
-              type = result.school.name
-              if(!spell_types.includes(type)) {
-                spell_types.push(type)
-
-                thisll = $("<section tipo='"+type+"'>"+type+htmllevel()+"</section>")
-                $("#spell_types_list").prepend(thisll)
-
-                $($(thisll).children()[0]).on("scroll", function(){
-                  thisll.trigger("custom-scroll");
-                })
-              }
-
-              icon = "https://www.dndbeyond.com/content/1-0-2639-0/skins/waterdeep/images/spell-schools/35/"+result.school.index+".png"
-              spell_list.push(result)
-
-              if((act_filter == type || act_filter == "All") && (act_level_filter == result.level || act_level_filter == "-")) {
-                $("#lista").append(
-                  '<div class="l-elem" index="'+result.index+'">'+
-                      '<img width="48" height="48" style="border-radius: 50px;margin-right: 14px;" src="'+icon+'"/>'+
-                      '<div class="right">'+
-                          '<text style="vertical-align: top; font-weight: 700;">'+k.name+'</text>'+
-                          '<text style="width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">'+result.desc+'</text>'+
-                      '</div>'+
-                  '</div>')
-              }
-
-              if(total_request == count_request)
-                $("#loading_list").addClass("hidden")
-            }
-        });
-      })
-    }});
+  load_spell()
 });
 
 function htmllevel() {
@@ -218,7 +166,9 @@ function openclose_info() {
 function fill_info(spell) {
   $("#level").html(spell.level == "0" ? "T" : spell.level)
   $("#act_filter").html(spell.name)
+  
   $("#desc").html(spell.desc)
+  
   $("#higher_level").html(spell.higher_level)
   if(spell.range != 'Self') {
     var calc = spell.range.substring(0,spell.range.indexOf(" feet"))
@@ -258,7 +208,7 @@ function fill_info(spell) {
     if(spell.damage.damage_at_slot_level != null) {
       damage = "(";
       Object.entries(spell.damage.damage_at_slot_level).forEach(function(k,v) {
-        damage += "level "+k[0]+": "+k[1]+";"
+        damage += " level "+k[0]+": "+k[1]+";"
       })
       damage = damage.substring(0,damage.lastIndexOf(";")-1)
       damage += ")"
@@ -276,4 +226,83 @@ function fill_info(spell) {
     }
   }
   
+}
+
+$("#class_list").on("scroll",function(){
+  ll = $("#class_list").children()
+  
+  $(".active_").removeClass("active_")
+  ll.each(function (index, ele) {
+    if (Math.abs(ele.getBoundingClientRect().left - $("#class_list")[0].getBoundingClientRect().left) < 15) {
+      act_class = $(ele).attr("dnd") 
+      $("#lista").empty()
+      $("#spell_types_list").empty()
+      spell_types = []
+      spell_list = []
+      load_spell();    
+      
+    } else {
+    }
+  });
+})
+
+function load_spell() {
+  $.ajax({
+    url: "https://www.dnd5eapi.co/api/classes/"+act_class+"/spells", 
+    success: function(result){
+      
+      $("#loading_list").removeClass("hidden")
+      spell_types.push("All")
+
+      thisll1 = $("<section class='active' tipo='All'>All"+htmllevel()+"</section>")
+      $("#spell_types_list").prepend(thisll1)
+
+      $($(thisll1).children()[0]).on("scroll", function(){
+        thisll1.trigger("custom-scroll");
+      })
+
+      $("#spell_types_list").append(thisll1)
+      $("#spell_types_list").append("<section style='color:white'>1</section>")
+      $("#spell_types_list").append("<section style='color:white'>1</section>")
+
+      var total_request = 0;
+      var count_request = 0;
+      result.results.forEach(function(k,v) {
+        total_request++;
+        $.ajax({
+          url: "https://www.dnd5eapi.co/api/spells/"+k.index, 
+          success: function(result){
+              count_request++;
+              type = result.school.name
+              if(!spell_types.includes(type)) {
+                spell_types.push(type)
+
+                thisll = $("<section tipo='"+type+"'>"+type+htmllevel()+"</section>")
+                $("#spell_types_list").prepend(thisll)
+
+                $($(thisll).children()[0]).on("scroll", function(){
+                  thisll.trigger("custom-scroll");
+                })
+              }
+
+              icon = "https://www.dndbeyond.com/content/1-0-2639-0/skins/waterdeep/images/spell-schools/35/"+result.school.index+".png"
+              spell_list.push(result)
+
+              if((act_filter == type || act_filter == "All") && (act_level_filter == result.level || act_level_filter == "-")) {
+                $("#lista").append(
+                  '<div class="l-elem" index="'+result.index+'">'+
+                      '<img width="48" height="48" style="border-radius: 50px;margin-right: 14px;" src="'+icon+'"/>'+
+                      '<div class="right">'+
+                          '<text style="vertical-align: top; font-weight: 700;">'+k.name+'</text>'+
+                          '<text style="width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">'+result.desc+'</text>'+
+                      '</div>'+
+                  '</div>')
+              }
+
+              if(total_request == count_request)
+                $("#loading_list").addClass("hidden")
+            }
+        });
+      })
+    }});
 }

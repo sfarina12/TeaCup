@@ -308,3 +308,60 @@ close-notch {
 #loading_spell #l3 {
     width: 35px;
 }
+
+#class_selector {
+    position: absolute;
+    bottom: 13%;
+    width: 100%;
+    height: 68%;
+}
+
+#class_list {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    align-content: center;
+    overflow-x: scroll;
+    gap: 3%;
+    height: 100%;
+    scroll-snap-type: x mandatory;
+}
+
+#class_list section {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 12px;
+    flex: 0 0 auto;
+    width: 100%;
+    height: 71%;
+    border-radius: 20px;
+    justify-content: center;
+    font-size: 29px;
+    scroll-snap-align: start;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+#class_list section div img {
+    position: absolute
+}
+
+className {
+    position: absolute; 
+    top: 25%; 
+    left: 12%; 
+    font-family: Ubuntu;
+    font-weight: bold;
+}
+
+#class_list div {
+    width: 94%;
+    height: 100%;
+    background: white;
+    margin: 3%;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+}
