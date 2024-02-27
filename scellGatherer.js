@@ -258,25 +258,26 @@ function load_spell() {
     success: function(result){
       
       $("#loading_list").removeClass("hidden")
-      spell_types.push("All")
-
-      thisll1 = $("<section class='active' tipo='All'>All"+htmllevel()+"</section>")
-      $("#spell_types_list").prepend(thisll1)
-
-      $($(thisll1).children()[0]).on("scroll", function(){
-        thisll1.trigger("custom-scroll");
-      })
-
-      $("#spell_types_list").append(thisll1)
-      $("#spell_types_list").append("<section style='color:white'>1</section>")
-      $("#spell_types_list").append("<section style='color:white'>1</section>")
-
+      
       var total_request = 0;
       var count_request = 0;
 
       if(result.count == 0) {
         $("#loading_list").addClass("hidden")
         $("#loading_failed").removeClass("hidden")
+      } else {
+        spell_types.push("All")
+
+        thisll1 = $("<section class='active' tipo='All'>All"+htmllevel()+"</section>")
+        $("#spell_types_list").prepend(thisll1)
+        
+        $($(thisll1).children()[0]).on("scroll", function(){
+          thisll1.trigger("custom-scroll");
+        })
+      
+        $("#spell_types_list").append(thisll1)
+        $("#spell_types_list").append("<section style='color:white'>1</section>")
+        $("#spell_types_list").append("<section style='color:white'>1</section>")
       }
 
       result.results.forEach(function(k,v) {
