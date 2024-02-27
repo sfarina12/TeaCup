@@ -235,6 +235,7 @@ $("#class_list").on("scroll",function(){
     $(".active_").removeClass("active_")
     ll.each(function (index, ele) {
       if (Math.abs(ele.getBoundingClientRect().left - $("#class_list")[0].getBoundingClientRect().left) < 15) {
+        force_stop = true
         act_class = $(ele).attr("dnd") 
         $("#lista").empty()
         $("#spell_types_list").empty()
@@ -250,6 +251,7 @@ $("#class_list").on("scroll",function(){
 
 
 function load_spell() {
+  force_stop = false
   $("#loading_failed").addClass("hidden")
   $.ajax({
     url: "https://www.dnd5eapi.co/api/classes/"+act_class+"/spells", 
@@ -279,40 +281,42 @@ function load_spell() {
 
       result.results.forEach(function(k,v) {
         total_request++;
-        $.ajax({
-          url: "https://www.dnd5eapi.co/api/spells/"+k.index, 
-          success: function(result){
-              count_request++;
-              type = result.school.name
-              if(!spell_types.includes(type)) {
-                spell_types.push(type)
+        if(!force_stop) {
+          $.ajax({
+            url: "https://www.dnd5eapi.co/api/spells/"+k.index, 
+            success: function(result){
+                count_request++;
+                type = result.school.name
+                if(!spell_types.includes(type)) {
+                  spell_types.push(type)
 
-                thisll = $("<section tipo='"+type+"'>"+type+htmllevel()+"</section>")
-                $("#spell_types_list").prepend(thisll)
+                  thisll = $("<section tipo='"+type+"'>"+type+htmllevel()+"</section>")
+                  $("#spell_types_list").prepend(thisll)
 
-                $($(thisll).children()[0]).on("scroll", function(){
-                  thisll.trigger("custom-scroll");
-                })
+                  $($(thisll).children()[0]).on("scroll", function(){
+                    thisll.trigger("custom-scroll");
+                  })
+                }
+
+                icon = "https://www.dndbeyond.com/content/1-0-2639-0/skins/waterdeep/images/spell-schools/35/"+result.school.index+".png"
+                spell_list.push(result)
+
+                if((act_filter == type || act_filter == "All") && (act_level_filter == result.level || act_level_filter == "-")) {
+                  $("#lista").append(
+                    '<div class="l-elem" index="'+result.index+'">'+
+                        '<img width="48" height="48" style="border-radius: 50px;margin-right: 14px;" src="'+icon+'"/>'+
+                        '<div class="right">'+
+                            '<text style="vertical-align: top; font-weight: 700;">'+k.name+'</text>'+
+                            '<text style="width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">'+result.desc+'</text>'+
+                        '</div>'+
+                    '</div>')
+                }
+
+                if(total_request == count_request)
+                  $("#loading_list").addClass("hidden")
               }
-
-              icon = "https://www.dndbeyond.com/content/1-0-2639-0/skins/waterdeep/images/spell-schools/35/"+result.school.index+".png"
-              spell_list.push(result)
-
-              if((act_filter == type || act_filter == "All") && (act_level_filter == result.level || act_level_filter == "-")) {
-                $("#lista").append(
-                  '<div class="l-elem" index="'+result.index+'">'+
-                      '<img width="48" height="48" style="border-radius: 50px;margin-right: 14px;" src="'+icon+'"/>'+
-                      '<div class="right">'+
-                          '<text style="vertical-align: top; font-weight: 700;">'+k.name+'</text>'+
-                          '<text style="width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">'+result.desc+'</text>'+
-                      '</div>'+
-                  '</div>')
-              }
-
-              if(total_request == count_request)
-                $("#loading_list").addClass("hidden")
-            }
-        });
+          });
+        }
       })
     }});
 }
