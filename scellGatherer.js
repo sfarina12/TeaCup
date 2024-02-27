@@ -167,17 +167,9 @@ function fill_info(spell) {
   $("#level").html(spell.level == "0" ? "T" : spell.level)
   $("#act_filter").html(spell.name)
   
-  var description = String(spell.desc)
-
-  var found = description.match(/[0-9]\w+/g)
-  found.forEach(function(k,v) {
-    if(k.includes("d")) {
-      description = String(description).replace(k,"<b>"+k+"</b>")
-    }
-  })
-  $("#desc").html(description)
+  $("#desc").html(hightlite(spell.desc))
   
-  $("#higher_level").html(spell.higher_level)
+  $("#higher_level").html(hightlite(spell.higher_level))
   if(spell.range != 'Self') {
     var calc = spell.range.substring(0,spell.range.indexOf(" feet"))
     calc = Math.floor(calc / 3.28084)
@@ -256,7 +248,18 @@ $("#class_list").on("scroll",function(){
   }, 250));
 })
 
-
+function hightlite(text) {
+  var description = String(text)
+  var found = description.match(/[0-9]\w+/g)
+  if(found != null) {
+    found.forEach(function(k,v) {
+      if(k.includes("d") && !k.includes("nd")) {
+        description = String(description).replaceAll(k,"<b>"+k+"</b>")
+      }
+    })
+  }
+  return description
+}
 
 function load_spell() {
   force_stop = false
