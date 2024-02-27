@@ -10,7 +10,7 @@ var act_class = "wizard"
 
 
 $(document).ready(function(){
-  load_spell()
+  //load_spell()
 });
 
 function htmllevel() {
@@ -229,24 +229,28 @@ function fill_info(spell) {
 }
 
 $("#class_list").on("scroll",function(){
-  ll = $("#class_list").children()
-  
-  $(".active_").removeClass("active_")
-  ll.each(function (index, ele) {
-    if (Math.abs(ele.getBoundingClientRect().left - $("#class_list")[0].getBoundingClientRect().left) < 15) {
-      act_class = $(ele).attr("dnd") 
-      $("#lista").empty()
-      $("#spell_types_list").empty()
-      spell_types = []
-      spell_list = []
-      load_spell();    
-      
-    } else {
-    }
-  });
+  clearTimeout($.data(this, 'scrollTimer'));
+  $.data(this, 'scrollTimer', setTimeout(function() {
+    ll = $("#class_list").children()
+    $(".active_").removeClass("active_")
+    ll.each(function (index, ele) {
+      if (Math.abs(ele.getBoundingClientRect().left - $("#class_list")[0].getBoundingClientRect().left) < 15) {
+        act_class = $(ele).attr("dnd") 
+        $("#lista").empty()
+        $("#spell_types_list").empty()
+        spell_types = []
+        spell_list = []
+        load_spell();    
+      } else {
+      }
+    });
+  }, 250));
 })
 
+
+
 function load_spell() {
+  $("#loading_failed").addClass("hidden")
   $.ajax({
     url: "https://www.dnd5eapi.co/api/classes/"+act_class+"/spells", 
     success: function(result){
@@ -267,6 +271,12 @@ function load_spell() {
 
       var total_request = 0;
       var count_request = 0;
+
+      if(result.count == 0) {
+        $("#loading_list").addClass("hidden")
+        $("#loading_failed").removeClass("hidden")
+      }
+
       result.results.forEach(function(k,v) {
         total_request++;
         $.ajax({
