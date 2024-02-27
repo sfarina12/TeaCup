@@ -167,7 +167,15 @@ function fill_info(spell) {
   $("#level").html(spell.level == "0" ? "T" : spell.level)
   $("#act_filter").html(spell.name)
   
-  $("#desc").html(spell.desc)
+  var description = String(spell.desc)
+
+  var found = description.match(/[0-9]\w+/g)
+  found.forEach(function(k,v) {
+    if(k.includes("d")) {
+      description = String(description).replace(k,"<b>"+k+"</b>")
+    }
+  })
+  $("#desc").html(description)
   
   $("#higher_level").html(spell.higher_level)
   if(spell.range != 'Self') {
@@ -270,11 +278,11 @@ function load_spell() {
 
         thisll1 = $("<section class='active' tipo='All'>All"+htmllevel()+"</section>")
         $("#spell_types_list").prepend(thisll1)
-        
+
         $($(thisll1).children()[0]).on("scroll", function(){
           thisll1.trigger("custom-scroll");
         })
-      
+
         $("#spell_types_list").append(thisll1)
         $("#spell_types_list").append("<section style='color:white'>1</section>")
         $("#spell_types_list").append("<section style='color:white'>1</section>")
