@@ -373,3 +373,59 @@ className {
     align-items: center;
     justify-content: center;
 }
+
+#search {
+    height: 9%;
+    display: flex;
+    position: absolute;
+    width: auto;
+    bottom: calc(85% - 20px);
+    left: 3%;
+    right: 3%;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    transition: left ease 0.3s;
+}
+
+#searchIcon {
+    background: white;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    z-index: 1;
+}
+
+#searchIcon img {
+    width: 60%;
+    height: auto;
+}
+
+#searchContainer {
+    background: white;
+    height: 100%;
+    width: 0%;
+    border-radius: 0px 20px 20px 0px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: -18px;
+    transition: width cubic-bezier(0, 0, 0, 0.99) 0.3s;
+}
+
+#searchContainer input {
+    height: 65%;
+    width: 90%;
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+    background-color: white;
+}
+
+#searchContainer input:focus { 
+    outline:none
+}

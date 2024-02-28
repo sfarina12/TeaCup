@@ -6,13 +6,10 @@ var act_level_filter = "-"
 var is_scrolling = false;
 var act_class = "wizard"
 var ajax_requests = []
+var searchOpen = false
+var searchValue = ""
 
-//add smar DICE bolder
-
-
-$(document).ready(function(){
-  //load_spell()
-});
+$(document).ready(function(){});
 
 function htmllevel() {
   return '<div class="spell_types_level"><section>-</section><section>T</section><section>1</section><section>2</section><section>3</section><section>4</section><section>5</section><section>6</section><section>7</section><section>8</section><section>9</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section></div>';
@@ -54,20 +51,29 @@ $("body").on('click', '#spell_types_list section', function() {
 
 function openclose_filter() {
   $("#spell_types_list").removeClass("hidden")
-  if(!open_bottom) {
-    $("#bottom_navigator").attr("style","height: 30%;")
-    $("#selected_filter").attr("style","height: 36%;")
-    $("#expandFilter img").attr("src","https://img.icons8.com/fluency-systems-filled/48/ff7300/collapse-arrow.png")
-  }
-  if(open_bottom) {
+
+  if(!searchOpen) {
+    if(!open_bottom) {
+      $("#bottom_navigator").attr("style","height: 30%;")
+      $("#selected_filter").attr("style","height: 36%;")
+      $("#expandFilter img").attr("src","https://img.icons8.com/fluency-systems-filled/48/ff7300/collapse-arrow.png")
+    }
+    if(open_bottom) {
+      $("#bottom_navigator").attr("style","");
+      $("#selected_filter").attr("style","")
+      $("#expandFilter img").attr("src","https://img.icons8.com/fluency-systems-filled/48/ff7300/collapse-arrow--v2.png")
+      var tmp = act_level_filter == "0" ? "T" : act_level_filter
+      tmp = act_level_filter == "-" ? "" : act_level_filter
+      $("#act_filter").html(act_filter+" "+tmp)
+    }
+
+    open_bottom = !open_bottom;
+  } else {
+    $("#expandFilter img").attr("src","https://img.icons8.com/windows/48/ff7300/multiply.png")
     $("#bottom_navigator").attr("style","");
     $("#selected_filter").attr("style","")
     $("#expandFilter img").attr("src","https://img.icons8.com/fluency-systems-filled/48/ff7300/collapse-arrow--v2.png")
-    var tmp = act_level_filter == "0" ? "T" : act_level_filter
-    tmp = act_level_filter == "-" ? "" : act_level_filter
-    $("#act_filter").html(act_filter+" "+tmp)
   }
-  open_bottom = !open_bottom;
 }
 
 $(document).on('touchmove',"#touchSupport",function(e){
@@ -93,8 +99,11 @@ $(document).on('touchend',"#touchSupport",function(e){
   percentage = ( screenWidth - pixels ) / screenWidth ;
   if(percentage > 0.15) {
     $("#content_brawser").attr("style","height:6%;background:white; transition: height cubic-bezier(0, 0, 0, 0.99) 0.3s,background cubic-bezier(0, 0, 0, 0.99) 0.3s;");
+    $("#search").attr("style","left: -100%;")
+    openClose_search(true)
   } else {
     $("#content_brawser").attr("style","transition: height cubic-bezier(0, 0, 0, 0.99) 0.3s,background cubic-bezier(0, 0, 0, 0.99) 0.3s;");
+    $("#search").attr("style","")
   }
 })
 
@@ -266,9 +275,7 @@ function hightlite(text) {
   return description
 }
 
-function load_spell() {
-  //force_stop = false
-  
+function load_spell() { 
   $("#loading_failed").addClass("hidden")
   $.ajax({
     url: "https://www.dnd5eapi.co/api/classes/"+act_class+"/spells", 
@@ -322,7 +329,13 @@ function load_spell() {
                 icon = "https://www.dndbeyond.com/content/1-0-2639-0/skins/waterdeep/images/spell-schools/35/"+result.school.index+".png"
                 spell_list.push(result)
 
-                if((act_filter == type || act_filter == "All") && (act_level_filter == result.level || act_level_filter == "-")) {
+                magin_name = (result.name.toLowerCase()).replace(/\s/g, '')
+                var condition = false;
+
+                if((act_filter == type || act_filter == "All") && (act_level_filter == result.level || act_level_filter == "-") && searchValue == "")  condition = true
+                if(magin_name.includes(searchValue)) condition = true
+
+                if(condition) {
                   $("#lista").append(
                     '<div class="l-elem" index="'+result.index+'">'+
                         '<img width="48" height="48" style="border-radius: 50px;margin-right: 14px;" src="'+icon+'"/>'+
@@ -341,4 +354,67 @@ function load_spell() {
         //}
       })
     }});
+}
+
+$(document).on('touchend',"#searchIcon",function(){
+  openClose_search()
+})
+
+function openClose_search(close = false) {
+  if(!close) {
+    searchOpen = !searchOpen
+    searchValue = ""
+    $("#searchContainer input").val("")
+    if(searchOpen) {
+      openclose_filter()
+      $("#searchContainer").attr("style","width:100%")
+      $("#searchIcon").attr("style","background-color:#FF7300")
+      $("#searchIcon img").attr("src","https://img.icons8.com/windows/96/FFFFFF/search--v1.png")
+    } else {
+      searchByName("")
+      $("#searchContainer").attr("style","")
+      $("#searchIcon").attr("style","")
+      $("#searchIcon img").attr("src","https://img.icons8.com/windows/96/FF7300/search--v1.png")
+    }
+  } else {
+    searchOpen = false
+    searchValue = ""
+    $("#searchContainer input").val("")
+    searchByName("")
+    $("#searchContainer").attr("style","")
+    $("#searchIcon").attr("style","")
+    $("#searchIcon img").attr("src","https://img.icons8.com/windows/96/FF7300/search--v1.png")
+  }
+}
+
+$(document).on("keyup","#searchContainer input",function(){
+  searchByName($(this).val())
+})
+
+function searchByName(textTuSearch) {
+  searchValue = (textTuSearch.toLowerCase()).replace(/\s/g, '')
+  $("#lista").empty()
+  
+  if(textTuSearch != "")
+    $("#act_filter").html(searchValue)
+  else $("#act_filter").html("All")
+
+  act_filter = "All"
+  act_level_filter = "-"
+
+  spell_list.forEach(function(k,v) {
+    magin_name = (k.name.toLowerCase()).replace(/\s/g, '')
+    if(magin_name.includes(searchValue)) {
+      icon = "https://www.dndbeyond.com/content/1-0-2639-0/skins/waterdeep/images/spell-schools/35/"+k.school.index+".png"
+      $("#lista").append(
+        '<div class="l-elem" index="'+k.index+'">'+
+            '<img width="48" height="48" style="border-radius: 50px;margin-right: 14px;" src="'+icon+'"/>'+
+            '<div class="right">'+
+                '<text style="vertical-align: top; font-weight: 700;">'+k.name+'</text>'+
+                '<text style="width: 190px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">'+k.desc+'</text>'+
+            '</div>'+
+        '</div>'
+      )
+    }
+  })
 }
