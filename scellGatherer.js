@@ -5,6 +5,7 @@ var act_filter = "All";
 var act_level_filter = "-"
 var is_scrolling = false;
 var act_class = "wizard"
+var ajax_requests = []
 
 //add smar DICE bolder
 
@@ -235,12 +236,16 @@ $("#class_list").on("scroll",function(){
     $(".active_").removeClass("active_")
     ll.each(function (index, ele) {
       if (Math.abs(ele.getBoundingClientRect().left - $("#class_list")[0].getBoundingClientRect().left) < 15) {
-        force_stop = true
+        ajax_requests.forEach(function(k,v){
+          k.abort()
+        })
+        //force_stop = true
         act_class = $(ele).attr("dnd") 
         $("#lista").empty()
         $("#spell_types_list").empty()
         spell_types = []
         spell_list = []
+        ajax_requests = []
         load_spell();    
       } else {
       }
@@ -262,7 +267,8 @@ function hightlite(text) {
 }
 
 function load_spell() {
-  force_stop = false
+  //force_stop = false
+  
   $("#loading_failed").addClass("hidden")
   $.ajax({
     url: "https://www.dnd5eapi.co/api/classes/"+act_class+"/spells", 
@@ -274,6 +280,7 @@ function load_spell() {
       var count_request = 0;
 
       if(result.count == 0) {
+        //no spells found
         $("#loading_list").addClass("hidden")
         $("#loading_failed").removeClass("hidden")
       } else {
@@ -293,8 +300,10 @@ function load_spell() {
 
       result.results.forEach(function(k,v) {
         total_request++;
-        if(!force_stop) {
-          $.ajax({
+
+        //if(!force_stop) {
+          ajax_requests.push(
+            $.ajax({
             url: "https://www.dnd5eapi.co/api/spells/"+k.index, 
             success: function(result){
                 count_request++;
@@ -327,8 +336,9 @@ function load_spell() {
                 if(total_request == count_request)
                   $("#loading_list").addClass("hidden")
               }
-          });
-        }
+            })
+          )
+        //}
       })
     }});
 }
