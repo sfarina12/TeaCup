@@ -10,7 +10,7 @@ body {
 }
 
 #main_container {
-    background-image: url(../img/bg2.jpg);
+    background-image: url(../img/ater.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 100%;
@@ -428,4 +428,14 @@ className {
 
 #searchContainer input:focus { 
     outline:none
+}
+
+.lastSelect {
+    flex:none;
+    width: 100%;
+}
+
+.lastSelectVertical {
+    flex:none;
+    height: calc(100% - 15px);
 }

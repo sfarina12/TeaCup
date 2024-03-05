@@ -12,7 +12,7 @@ var searchValue = ""
 $(document).ready(function(){});
 
 function htmllevel() {
-  return '<div class="spell_types_level"><section>-</section><section>T</section><section>1</section><section>2</section><section>3</section><section>4</section><section>5</section><section>6</section><section>7</section><section>8</section><section>9</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section><section style="color:white">.</section></div>';
+  return '<div class="spell_types_level"><section>-</section><section>T</section><section>1</section><section>2</section><section>3</section><section>4</section><section>5</section><section>6</section><section>7</section><section>8</section><section class="lastSelect">9</section>';
 }
 
 var open_bottom = false;
@@ -220,7 +220,7 @@ function fill_info(spell) {
       Object.entries(spell.damage.damage_at_slot_level).forEach(function(k,v) {
         damage += " level "+k[0]+": "+k[1]+";"
       })
-      damage = damage.substring(0,damage.lastIndexOf(";")-1)
+      damage = damage.substring(0,damage.lastIndexOf(";"))
       damage += ")"
     }
     comma = spell.attack_type == null ? "" : ", "
@@ -293,16 +293,16 @@ function load_spell() {
       } else {
         spell_types.push("All")
 
-        thisll1 = $("<section class='active' tipo='All'>All"+htmllevel()+"</section>")
+        thisll1 = $("<section class='active lastSelectVertical' tipo='All'>All"+htmllevel()+"</section>")
         $("#spell_types_list").prepend(thisll1)
 
         $($(thisll1).children()[0]).on("scroll", function(){
           thisll1.trigger("custom-scroll");
         })
 
-        $("#spell_types_list").append(thisll1)
-        $("#spell_types_list").append("<section style='color:white'>1</section>")
-        $("#spell_types_list").append("<section style='color:white'>1</section>")
+        //$("#spell_types_list").append(thisll1)
+        //$("#spell_types_list").append("<section style='color:white'>1</section>")
+        //$("#spell_types_list").append("<section style='color:white'>1</section>")
       }
 
       result.results.forEach(function(k,v) {
