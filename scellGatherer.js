@@ -62,8 +62,9 @@ function openclose_filter() {
       $("#bottom_navigator").attr("style","");
       $("#selected_filter").attr("style","")
       $("#expandFilter img").attr("src","https://img.icons8.com/fluency-systems-filled/48/ff7300/collapse-arrow--v2.png")
+    
       var tmp = act_level_filter == "0" ? "T" : act_level_filter
-      tmp = act_level_filter == "-" ? "" : act_level_filter
+      tmp = act_level_filter == "-" ? "" : tmp
       $("#act_filter").html(act_filter+" "+tmp)
     }
 
